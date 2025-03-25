@@ -41,7 +41,7 @@ router.post("/auth/login", loginRequest, validate, async (req, res) => {
 
 		const token = jwt.sign({ id: user._id, email: user.email }, secretKey, { expiresIn: "1h" });
 
-		res.json({ token: token });
+		res.json({ message: "Login Successfully", token: token });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -50,7 +50,7 @@ router.post("/auth/login", loginRequest, validate, async (req, res) => {
 router.get("/profile", authMiddleware, async (req, res) => {
 	try {
 		const email = req.user.email;
-		const user = await User.findOne({ email: email });
+		const user = await User.findOne({ email: email }).select("-password");
 
 		if (!user) {
 			return res.status(404).json({ error: "User not found" });
