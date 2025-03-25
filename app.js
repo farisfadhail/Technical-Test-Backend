@@ -5,10 +5,11 @@ const connectDB = require("./database/db");
 
 const port = process.env.PORT || 3000;
 
-const itemRoutes = require("./routes/userRoutes");
-const errorHandler = require("./middleware/errorMiddleware");
+const itemRoutes = require("./routes/itemRoutes");
+const authRoutes = require("./routes/authRoutes");
 
-// Connect to MongoDB
+const { errorHandler } = require("./middleware/errorMiddleware");
+
 connectDB();
 
 app.use(errorHandler);
@@ -18,7 +19,8 @@ app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.use("/user", itemRoutes);
+app.use("/items", itemRoutes);
+app.use("/", authRoutes);
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);

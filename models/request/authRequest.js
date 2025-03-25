@@ -1,20 +1,7 @@
-const jwt = require("jsonwebtoken");
+const { body } = require("express-validator");
 
-const authRequest = (req, res, next) => {
-	const token = req.header("X-JWT-TOKEN");
+const registerRequest = [body("email").isEmail().withMessage("Invalid email format"), body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters")];
 
-	if (!token) {
-		return res.status(401).json({ error: "Access denied, no token provided" });
-	}
+const loginRequest = [body("email").isEmail().withMessage("Invalid email format"), body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters")];
 
-	try {
-		const secretKey = process.env.JWT_SECRET;
-		const decoded = jwt.verify(token.replace("Bearer ", ""), secretKey);
-		req.user = decoded;
-		next();
-	} catch (error) {
-		res.status(400).json({ error: "Invalid token" });
-	}
-};
-
-module.exports = authRequest;
+module.exports = { registerRequest, loginRequest };
